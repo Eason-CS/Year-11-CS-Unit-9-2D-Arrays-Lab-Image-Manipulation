@@ -8,8 +8,6 @@ public class ImageManipulation {
      *  Write a statement that will display the image in a window
      */
     public static void main(String[] args) {
-
-
     }
 
     /** CHALLENGE ONE: Grayscale
@@ -21,7 +19,16 @@ public class ImageManipulation {
      * Calculate the average of the red, green, and blue components of the pixel.
      * Set the red, green, and blue components to this average value. */
     public static void grayScale(String pathOfFile) {
-
+        Pixel[][] image = loadImage(pathOfFile);
+        for (int y = 0; y < image.length; y++) {
+            for (int x = 0; x < image[y].length; x++) {
+                int avg = getAverageColour(image[y][x]);
+                image[y][x].setRed(avg);
+                image[y][x].setGreen(avg);
+                image[y][x].setBlue(avg);
+            }
+        }
+        saveImage(image, "grayscale_image.jpg");
     }
 
     /** A helper method that can be used to assist you in each challenge.
@@ -30,7 +37,7 @@ public class ImageManipulation {
      * @return the average RGB value
      */
     private static int getAverageColour(Pixel pixel) {
-        return 0;
+        return (pixel.getRed() + pixel.getGreen() + pixel.getBlue());
     }
 
     /** CHALLENGE TWO: Black and White
@@ -43,8 +50,24 @@ public class ImageManipulation {
      * If the average is less than 128, set the pixel to black
      * If the average is equal to or greater than 128, set the pixel to white */
     public static void blackAndWhite(String pathOfFile) {
-
+        Pixel[][] image = loadImage(pathOfFile);
+        for (int y = 0; y < image.length; y++) {
+            for (int x = 0; x < image[y].length; x++) {
+                int avg = getAverageColour(image[y][x]);
+                if (avg < 128) {
+                    image[y][x].setRed(0);
+                    image[y][x].setGreen(0);
+                    image[y][x].setBlue(0);
+                } else {
+                    image[y][x].setRed(255);
+                    image[y][x].setGreen(255);
+                    image[y][x].setBlue(255);
+                }
+            }
+        }
+        saveImage(image, "bw_image.jpg");
     }
+
 
     /** CHALLENGE Three: Edge Detection
      *
@@ -69,7 +92,21 @@ public class ImageManipulation {
      * edge detection to an image using a threshold of 35
      *  */
     public static void edgeDetection(String pathToFile, int threshold) {
-
+        Pixel[][] image = loadImage(pathToFile);
+        Pixel[][] edgeImage = new Pixel[image.length][image[0].length];
+        for (int y = 0; y < image.length; y++) {
+            for (int x = 0; x < image[y].length; x++) {
+                int currentAvg = getAverageColour(image[y][x]);
+                int leftAvg = (x > 0) ? getAverageColour(image[y][x - 1]) : currentAvg;
+                int bottomAvg = (y < image.length - 1) ? getAverageColour(image[y + 1][x]) : currentAvg;
+                if (Math.abs(currentAvg - leftAvg) > threshold || Math.abs(currentAvg - bottomAvg) > threshold) {
+                    edgeImage[y][x] = new Pixel(0, 0, 0);
+                } else {
+                    edgeImage[y][x] = new Pixel(255, 255, 255);
+                }
+            }
+        }
+        saveImage(edgeImage, "edge_image.jpg");
     }
 
     /** CHALLENGE Four: Reflect Image
@@ -79,7 +116,14 @@ public class ImageManipulation {
      *
      */
     public static void reflectImage(String pathToFile) {
-
+        Pixel[][] image = loadImage(pathToFile);
+        Pixel[][] reflectedImage = new Pixel[image.length][image[0].length];
+        for (int y = 0; y < image.length; y++) {
+            for (int x = 0; x < image[y].length; x++) {
+                reflectedImage[y][x] = image[y][image[y].length - 1 - x];
+            }
+        }
+        saveImage(reflectedImage, "reflected_image.jpg");
     }
 
     /** CHALLENGE Five: Rotate Image
@@ -89,7 +133,22 @@ public class ImageManipulation {
      *
      *  */
     public static void rotateImage(String pathToFile) {
-
+        Pixel[][] image = loadImage(pathToFile);
+        Pixel[][] rotatedImage = new Pixel[image[0].length][image.length];
+        for (int y = 0; y < image.length; y++) {
+            for (int x = 0; x < image[y].length; x++) {
+                rotatedImage[x][image.length - 1 - y] = image[y][x];
+            }
+        }
+        saveImage(rotatedImage, "rotated_image.jpg");
     }
 
+    private static Pixel[][] loadImage(String pathOfFile) {
+
+        return new Pixel[100][100];
+    }
+
+    private static void saveImage(Pixel[][] image, String outputPath) {
+
+    }
 }
